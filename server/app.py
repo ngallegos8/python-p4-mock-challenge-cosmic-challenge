@@ -79,11 +79,15 @@ class ScientistByID_Route(Resource):
         
     def delete(self, id):
         scientist = Scientist.query.filter(Scientist.id == id).first()
-        # print (scientist)
+        # print(scientist)
         if scientist:
-            db.session.delete(scientist)
-            db.session.commit()
-            return {}, 204
+            try:
+                db.session.delete(scientist)
+                db.session.commit()
+                return {}, 204
+            except Exception as e:
+                print(e)  # Print the exception for debugging
+                return {"error": "Internal Server Error"}, 500
         else:
             return {"error": "Scientist not found"}, 404
 

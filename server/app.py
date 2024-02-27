@@ -81,13 +81,12 @@ class ScientistByID_Route(Resource):
         scientist = Scientist.query.filter(Scientist.id == id).first()
         # print(scientist)
         if scientist:
-            try:
-                db.session.delete(scientist)
-                db.session.commit()
-                return {}, 204
-            except Exception as e:
-                print(e)  # Print the exception for debugging
-                return {"error": "Internal Server Error"}, 500
+            allMissions = Mission.query.filter(Mission.scientist_id == id).all()
+            for mission in allMissions:
+                db.session.delete(mission)
+            db.session.delete(scientist)
+            db.session.commit()
+            return {}, 204
         else:
             return {"error": "Scientist not found"}, 404
 
@@ -133,3 +132,7 @@ api.add_resource(Missions_Route, '/missions')
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
+
+
+# 1 check is if-else
+# multi-check is try-except
